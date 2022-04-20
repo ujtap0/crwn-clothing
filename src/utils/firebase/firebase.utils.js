@@ -5,8 +5,13 @@ import {
   signInWithRedirect,
   signInWithPopup, 
   GoogleAuthProvider, 
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
   } from 'firebase/auth';
+  //observer listner is a way for us to hook into some kind of stream of events, whether these events are sign at events or sign out events
+  //we're actually able to trigger something based on these changes
 
 import {
   getFirestore,
@@ -45,8 +50,6 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
 
   const userDocRef = doc(db, 'users', userAuth.uid);
 
-  console.log(userDocRef)
-
   const userSnapshot = await getDoc(userDocRef)
 
   if(!userSnapshot.exists()){
@@ -74,3 +77,17 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
   return await createUserWithEmailAndPassword(auth, email, password);
   //give back auth object
 }
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+  if(!email || !password) return;
+
+  return await signInWithEmailAndPassword(auth, email, password);
+  //give back auth object
+}
+
+export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback)
+
+// what this obsever does is it returns you back whatever you get back from on/off state changed in our on/off state change to work, it takes two parameters
+//첫번째 파라미터: auth
+//두번째 파라미터: 콜백 함수 => auth state가 바뀔 때마다 실행됨

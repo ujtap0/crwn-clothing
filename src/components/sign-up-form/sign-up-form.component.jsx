@@ -7,7 +7,7 @@ import Button from "../button/button.component";
 import './sign-up-form.styles.scss'
 
 const defaultFormFields = {
-  dispalyName: '',
+  displayName: '',
   email: '',
   password: '',
   confirmPassword: ''
@@ -29,11 +29,13 @@ const SignUpForm = () => {
       return
     }
     try{
-      const {user} = createAuthUserWithEmailAndPassword(
+      const {user} = await createAuthUserWithEmailAndPassword(
         email, 
         password)
         //authentication은 이메일과 비밀번호만 쓰이고
         //displayname같은 경우는 데이터 베이스에 저장해야 함
+
+        //whenever a user sings up for the first time, they're also going to have their user set inside of our user context
       await createUserDocumentFromAuth(user, { displayName });
       resetFormFields();
     }catch(error){
@@ -55,7 +57,7 @@ const SignUpForm = () => {
 
   return(
     <div className="sign-up-container">
-      <h2>계정이 없으면</h2>
+      <h2>계정이 없으신가요?</h2>
       <span>이메일과 비밀번호로 회원가입</span>
       <form onSubmit={handleSubmit}>
         <FormInput
